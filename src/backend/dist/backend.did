@@ -1,0 +1,163 @@
+type UserProfilePublic = 
+ record {
+   avatar: opt text;
+   bio: text;
+   completedSessions: nat;
+   createdAt: Timestamp;
+   id: UserId;
+   name: text;
+   skillsOffered: vec SkillEntry;
+   skillsWanted: vec SkillEntry;
+   trustScore: float64;
+ };
+type UserId = principal;
+type Timestamp = int;
+type SkillId = nat;
+type SkillEntry = 
+ record {
+   name: text;
+   proficiency: Proficiency;
+   skillId: SkillId;
+ };
+type Skill = 
+ record {
+   id: SkillId;
+   name: text;
+ };
+type SessionStatus = 
+ variant {
+   completed;
+   confirmed;
+   pending;
+   rejected;
+ };
+type SessionRequest = 
+ record {
+   message: opt text;
+   receiverId: UserId;
+   scheduledAt: Timestamp;
+   topic: text;
+ };
+type SessionPublic = 
+ record {
+   createdAt: Timestamp;
+   id: SessionId;
+   message: opt text;
+   receiverId: UserId;
+   requesterId: UserId;
+   scheduledAt: Timestamp;
+   status: SessionStatus;
+   topic: text;
+ };
+type SessionId = nat;
+type SaveProfileInput = 
+ record {
+   avatar: opt text;
+   bio: text;
+   name: text;
+   skillsOffered: vec SkillEntry;
+   skillsWanted: vec SkillEntry;
+ };
+type ReviewId = nat;
+type Review = 
+ record {
+   comment: opt text;
+   createdAt: Timestamp;
+   id: ReviewId;
+   rating: nat;
+   revieweeId: UserId;
+   reviewerId: UserId;
+   sessionId: SessionId;
+ };
+type Proficiency = 
+ variant {
+   beginner;
+   expert;
+   intermediate;
+ };
+type NotificationPublic = 
+ record {
+   createdAt: Timestamp;
+   dismissed: bool;
+   id: NotificationId;
+   kind: NotificationKind;
+ };
+type NotificationKind = 
+ variant {
+   newMatch: record {
+               fromUserId: UserId;
+               matchId: MatchId;
+             };
+   newMessage: record {
+                 fromUserId: UserId;
+                 messageId: MessageId;
+               };
+   sessionAccepted: record {sessionId: SessionId;};
+   sessionCompleted: record {sessionId: SessionId;};
+   sessionRejected: record {sessionId: SessionId;};
+   sessionRequest: record {
+                     fromUserId: UserId;
+                     sessionId: SessionId;
+                   };
+ };
+type NotificationId = nat;
+type MessagePublic = 
+ record {
+   content: text;
+   id: MessageId;
+   isRead: bool;
+   receiverId: UserId;
+   senderId: UserId;
+   timestamp: Timestamp;
+ };
+type MessageId = nat;
+type MatchResult = 
+ record {
+   createdAt: Timestamp;
+   matchId: MatchId;
+   theyOfferYouWant: vec SkillEntry;
+   user: UserProfilePublic;
+   youOfferTheyWant: vec SkillEntry;
+ };
+type MatchId = nat;
+type Conversation = 
+ record {
+   lastMessage: opt text;
+   lastTimestamp: opt Timestamp;
+   partnerId: UserId;
+   partnerName: text;
+   unreadCount: nat;
+ };
+service : {
+  addSkill: (name: text) -> (Skill);
+  completeSession: (sessionId: SessionId) -> (SessionPublic);
+  dismissNotification: (notificationId: NotificationId) -> ();
+  getActiveSessions: () -> (vec SessionPublic) query;
+  getCallerUserProfile: () -> (opt UserProfilePublic) query;
+  getCompletedSessions: () -> (vec SessionPublic) query;
+  getConversations: () -> (vec Conversation) query;
+  getDashboardStats: () ->
+   (record {
+      activeSessionsCount: nat;
+      averageTrustScore: float64;
+      completedSessionsCount: nat;
+    }) query;
+  getMatches: () -> (vec MatchResult) query;
+  getMessages: (partnerId: UserId, since: opt Timestamp) ->
+   (vec MessagePublic) query;
+  getNotificationBadgeCount: () -> (nat) query;
+  getNotifications: () -> (vec NotificationPublic) query;
+  getReceivedReviews: () -> (vec Review) query;
+  getReviewsForUser: (userId: UserId) -> (vec Review) query;
+  getUserProfile: (userId: UserId) -> (opt UserProfilePublic) query;
+  listSkills: () -> (vec Skill) query;
+  markMessagesRead: (partnerId: UserId) -> ();
+  refreshMatches: () -> (vec MatchResult);
+  requestSession: (input: SessionRequest) -> (SessionPublic);
+  respondToSession: (sessionId: SessionId, accept: bool) -> (SessionPublic);
+  saveCallerUserProfile: (input: SaveProfileInput) -> ();
+  searchSkills: (searchQuery: text) -> (vec Skill) query;
+  sendMessage: (receiverId: UserId, content: text) -> (MessagePublic);
+  submitReview: (sessionId: SessionId, rating: nat, comment: opt text) ->
+   (Review);
+}

@@ -1,0 +1,23 @@
+{
+  "overview": "BarterBrains is a peer-to-peer skill exchange platform where users learn and teach without money. Create a profile with skills you offer and want, get matched with compatible learners, chat, book sessions, and build your reputation through ratings and a trust score.",
+  "features": [
+    "Bidirectional skill matching — get paired with users who want your skills and offer what you want",
+    "User profiles with skills offered, skills wanted, bio, and profile picture",
+    "One-to-one chat with real-time polling refresh",
+    "Session booking — request, accept/reject, and mark sessions complete",
+    "Post-session ratings (1–5 stars) and written feedback",
+    "Trust score per profile based on completed sessions and average rating",
+    "Dashboard with active sessions, completed sessions, and received ratings",
+    "In-app notification center for new matches, messages, and session requests"
+  ],
+  "category": "productivity",
+  "tags": [
+    "skill-exchange",
+    "peer-to-peer",
+    "learning",
+    "networking",
+    "community",
+    "productivity"
+  ],
+  "last_updated": "2026-04-16T03:51:48.723Z"
+}

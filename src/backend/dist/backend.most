@@ -1,0 +1,152 @@
+// Version: 1.0.0
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type List__415060402<T> = List__790383201<T>;
+type List__790383201<T> =
+  {
+    var blockIndex : Nat__490723111;
+    var blocks : [var [var ?T]];
+    var elementIndex : Nat__490723111
+  };
+type MatchId__543136929 = Nat;
+type Match__279161147 =
+  {
+    createdAt : Timestamp__301639476;
+    id : MatchId__543136929;
+    user1 : UserId__158757552;
+    user2 : UserId__158757552
+  };
+type MessageId__291319400 = Nat;
+type Message__454780518 =
+  {
+    content : Text;
+    id : MessageId__291319400;
+    var isRead : Bool;
+    receiverId : UserId__158757552;
+    senderId : UserId__158757552;
+    timestamp : Timestamp__301639476
+  };
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type NotificationId__307495059 = Nat;
+type NotificationKind__631533211 =
+  {
+    #newMatch : {fromUserId : UserId__158757552; matchId : MatchId__543136929};
+    #newMessage :
+      {fromUserId : UserId__158757552; messageId : MessageId__291319400};
+    #sessionAccepted : {sessionId : SessionId__1052913375};
+    #sessionCompleted : {sessionId : SessionId__1052913375};
+    #sessionRejected : {sessionId : SessionId__1052913375};
+    #sessionRequest :
+      {fromUserId : UserId__158757552; sessionId : SessionId__1052913375}
+  };
+type Notification__264708741 =
+  {
+    createdAt : Timestamp__301639476;
+    var dismissed : Bool;
+    id : NotificationId__307495059;
+    kind : NotificationKind__631533211;
+    userId : UserId__158757552
+  };
+type Proficiency__1023775018 = {#beginner; #expert; #intermediate};
+type ReviewId__496285678 = Nat;
+type Review__513345496 =
+  {
+    comment : ?Text;
+    createdAt : Timestamp__301639476;
+    id : ReviewId__496285678;
+    rating : Nat;
+    revieweeId : UserId__158757552;
+    reviewerId : UserId__158757552;
+    sessionId : SessionId__1052913375
+  };
+type SessionId__1052913375 = Nat;
+type SessionStatus__1072723669 =
+  {#completed; #confirmed; #pending; #rejected};
+type Session__326799348 =
+  {
+    createdAt : Timestamp__301639476;
+    id : SessionId__1052913375;
+    message : ?Text;
+    receiverId : UserId__158757552;
+    requesterId : UserId__158757552;
+    scheduledAt : Timestamp__301639476;
+    var status : SessionStatus__1072723669;
+    topic : Text
+  };
+type SkillEntry__634433409 =
+  {
+    name : Text;
+    proficiency : Proficiency__1023775018;
+    skillId : SkillId__405375433
+  };
+type SkillId__405375433 = Nat;
+type Skill__496001150 = {id : SkillId__405375433; name : Text};
+type Timestamp__301639476 = Int;
+type UserId__158757552 = Principal;
+type UserProfile__446616884 =
+  {
+    var avatar : ?Text;
+    var bio : Text;
+    var completedSessions : Nat;
+    createdAt : Timestamp__301639476;
+    id : UserId__158757552;
+    var name : Text;
+    var skillsOffered : [SkillEntry__634433409];
+    var skillsWanted : [SkillEntry__634433409];
+    var trustScore : Float
+  };
+actor {
+  stable matches :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Match__279161147]];
+      var elementIndex : Nat__490723111
+    };
+  stable messages :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Message__454780518]];
+      var elementIndex : Nat__490723111
+    };
+  stable var nextMatchId : Nat;
+  stable var nextMessageId : Nat;
+  stable var nextNotificationId : Nat;
+  stable var nextReviewId : Nat;
+  stable var nextSessionId : Nat;
+  stable var nextSkillId : Nat;
+  stable notifications :
+    {
+      var root :
+        Node__46230540<UserId__158757552,
+                        List__415060402<Notification__264708741>>;
+      var size : Nat__490723111
+    };
+  stable profiles :
+    {
+      var root : Node__46230540<UserId__158757552, UserProfile__446616884>;
+      var size : Nat__490723111
+    };
+  stable reviews :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Review__513345496]];
+      var elementIndex : Nat__490723111
+    };
+  stable sessions :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Session__326799348]];
+      var elementIndex : Nat__490723111
+    };
+  stable skills :
+    {
+      var root : Node__46230540<SkillId__405375433, Skill__496001150>;
+      var size : Nat__490723111
+    }
+};
